@@ -1,0 +1,44 @@
+name: Pull Request or Push to Main
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+env:
+  DOTNET_NOLOGO: true
+
+jobs:
+
+  build_release:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        runtime-identifier: [win-x64, linux-x64, osx-x64]
+      fail-fast: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Build version prefix/suffix
+        run: |
+          echo "VERSION_PREFIX=${{ github.run_number }}.0.0" >> $GITHUB_ENV
+          echo "VERSION_SUFFIX=alpha" >> $GITHUB_ENV
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+
+      - run: dotnet restore --verbosity minimal
+
+      - run: dotnet build --configuration Release
+
+      - name: dotnet Publish ${{ matrix.runtime-identifier }} version
+        run: dotnet publish --configuration Release --runtime ${{ matrix.runtime-identifier }} --self-contained true -p:PublishReadyToRun=true -p:PublishTrimmed=true --output ./artifacts -p:VersionPrefix=$VERSION_PREFIX --version-suffix $VERSION_SUFFIX
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: SimpleAWSCodeArtifactAuthorization-${{ matrix.runtime-identifier }}-${{ env.VERSION_PREFIX }}-${{ env.VERSION_SUFFIX }}
+          path: ./artifacts/

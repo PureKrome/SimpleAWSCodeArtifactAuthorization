@@ -1,0 +1,50 @@
+name: Publish to Releases
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+      - "*.*.*"
+
+permissions:
+  contents: write
+
+env:
+  DOTNET_NOLOGO: true
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        runtime-identifier: [win-x64, linux-x64, osx-x64]
+      fail-fast: false
+
+    steps:
+
+      - name: Calculate version from the Commit Tag
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+
+      - run: dotnet restore --verbosity minimal
+
+      - run: dotnet build --configuration Release
+
+      - name: dotnet Publish ${{ matrix.runtime-identifier }} version
+        run: dotnet publish --configuration Release --runtime ${{ matrix.runtime-identifier }} --self-contained true -p:PublishReadyToRun=true -p:PublishTrimmed=true --output ./artifacts -p:version=${{ env.RELEASE_VERSION }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: SimpleAWSCodeArtifactAuthorization-${{ matrix.runtime-identifier }}-${{ env.RELEASE_VERSION }}
+          path: ./artifacts/
+
+      - name: Publish artifacts to Releases
+        uses: softprops/action-gh-release@v1

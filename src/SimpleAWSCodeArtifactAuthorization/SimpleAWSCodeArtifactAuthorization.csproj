@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <PublishSingleFile>true</PublishSingleFile>
+
+    <Authors>Pure Krome</Authors>
+    <Company>World Domination Technologies</Company>
+    <Product>Simple : AWS Code Artifact Authorization</Product>
+    <Description>Making it simple to authenticate with AWS Code Artifact</Description>
+    <Copyright>2021</Copyright>
+    <PackageProjectUrl>https://github.com/PureKrome/SimpleAWSCodeArtifactAuthorization</PackageProjectUrl>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/PureKrome/SimpleAWSCodeArtifactAuthorization</RepositoryUrl>
+    <RepositoryType>.net c# .net-core</RepositoryType>
+    <PackageTags>aws codeartifact dotnet c# world-domination unicorn magicalunicorn magical-unicorn</PackageTags>
+    <PackageReleaseNotes>https://github.com/PureKrome/SimpleAWSCodeArtifactAuthorization/blob/master/CHANGELOG.md</PackageReleaseNotes>
+
+    <!-- Source Link. REF: https://github.com/dotnet/sourcelink -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PackageIcon>icon.jpg</PackageIcon>
+    <PackageIconUrl />
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SimpleExec" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>
